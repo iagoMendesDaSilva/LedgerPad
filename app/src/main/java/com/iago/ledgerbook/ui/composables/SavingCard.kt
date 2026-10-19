@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -27,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,7 +43,11 @@ import java.util.Locale
 @Composable
 fun SavingCard(
     transaction: Transaction,
-    onLongPress: () -> Unit,onPress: () -> Unit) {
+    isMonthlyMode: Boolean = false,
+    onToggleCheck: (() -> Unit)? = null,
+    onLongPress: () -> Unit,
+    onPress: () -> Unit
+) {
 
     Column(
         modifier = Modifier
@@ -90,6 +97,21 @@ fun SavingCard(
                         modifier = Modifier.fillMaxSize(.25f)
                     )
                 }
+
+                if (isMonthlyMode && onToggleCheck != null) {
+                    Checkbox(
+                        checked = transaction.isChecked,
+                        onCheckedChange = { onToggleCheck() },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(4.dp)
+                            .zIndex(2f),
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = MaterialTheme.colorScheme.primary,
+                            uncheckedColor = Color.Black.copy(alpha = 0.5f)
+                        )
+                    )
+                }
             }
         }
         Column(Modifier.padding(top = 16.dp)) {
@@ -97,8 +119,10 @@ fun SavingCard(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 text = transaction.title,
-                style = MaterialTheme.typography.displaySmall,
-                color = Color.White
+                style = MaterialTheme.typography.displaySmall.copy(
+                    textDecoration = if (transaction.isChecked && isMonthlyMode) TextDecoration.LineThrough else TextDecoration.None
+                ),
+                color = if (transaction.isChecked && isMonthlyMode) Color.White.copy(alpha = 0.5f) else Color.White
             )
             Spacer(modifier = Modifier.height(5.dp))
             Text(

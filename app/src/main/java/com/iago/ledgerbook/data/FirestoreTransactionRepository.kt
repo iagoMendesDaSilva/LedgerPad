@@ -47,7 +47,8 @@ class FirestoreTransactionRepository @Inject constructor(
                             "type" to tx.type.name,
                             "title" to tx.title,
                             "value" to tx.value,
-                            "date" to (tx.date ?: System.currentTimeMillis())
+                            "date" to (tx.date ?: System.currentTimeMillis()),
+                            "isChecked" to tx.isChecked
                         )
                         batch.set(docRef, txMap)
                     }
@@ -74,7 +75,8 @@ class FirestoreTransactionRepository @Inject constructor(
                     "type" to transaction.type.name,
                     "title" to transaction.title,
                     "value" to transaction.value,
-                    "date" to (transaction.date ?: System.currentTimeMillis())
+                    "date" to (transaction.date ?: System.currentTimeMillis()),
+                    "isChecked" to transaction.isChecked
                 )
                 getCollection().document().set(txMap).await()
             } catch (e: Exception) {
@@ -95,7 +97,8 @@ class FirestoreTransactionRepository @Inject constructor(
                     "type" to transaction.type.name,
                     "title" to transaction.title,
                     "value" to transaction.value,
-                    "date" to (transaction.date ?: System.currentTimeMillis())
+                    "date" to (transaction.date ?: System.currentTimeMillis()),
+                    "isChecked" to transaction.isChecked
                 )
                 if (!query.isEmpty) {
                     for (doc in query.documents) {

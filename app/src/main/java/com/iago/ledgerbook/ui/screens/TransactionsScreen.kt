@@ -171,7 +171,11 @@ fun TransactionsScreenUI(
                         }
                     )
 
-                    SummaryDisplay(summaryData, currentScreen) {
+                    SummaryDisplay(
+                        summaryData = summaryData,
+                        transactionType = currentScreen,
+                        isMonthlyMode = (appMode.value == AppMode.MONTHLY)
+                    ) {
                         onChangeTransactionType(it)
                     }
 
@@ -207,6 +211,10 @@ fun TransactionsScreenUI(
                         TransactionsGrid(
                             transactions = filteredTransactions,
                             currentScreen = currentScreen,
+                            isMonthlyMode = (appMode.value == AppMode.MONTHLY),
+                            onToggleCheck = { transaction ->
+                                updateTransaction(transaction.copy(isChecked = !transaction.isChecked))
+                            },
                             onEdit = {
                                 showBottomSheet = BottomSheetAction.EDIT
                                 editItem.value = it
@@ -498,16 +506,35 @@ fun getSummaryData(transactions: List<Transaction>): SummaryData {
     var income = 0.0
     var expense = 0.0
     var saving = 0.0
+    var checkedIncome = 0.0
+    var checkedExpense = 0.0
+    var checkedSaving = 0.0
 
     transactions.forEach {
         when (it.type) {
-            TransactionType.INCOME -> income += it.value
-            TransactionType.EXPENSE -> expense += it.value
-            TransactionType.SAVING -> saving += it.value
+            TransactionType.INCOME -> {
+                income += it.value
+                if (it.isChecked) checkedIncome += it.value
+            }
+            TransactionType.EXPENSE -> {
+                expense += it.value
+                if (it.isChecked) checkedExpense += it.value
+            }
+            TransactionType.SAVING -> {
+                saving += it.value
+                if (it.isChecked) checkedSaving += it.value
+            }
         }
     }
 
-    return SummaryData(income, expense, saving)
+    return SummaryData(
+        incomes = income,
+        expenses = expense,
+        savings = saving,
+        checkedIncomes = checkedIncome,
+        checkedExpenses = checkedExpense,
+        checkedSavings = checkedSaving
+    )
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
