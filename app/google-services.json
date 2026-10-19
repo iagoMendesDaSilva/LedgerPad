@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "519047756160",
+    "project_id": "ledgerpad-e268a",
+    "storage_bucket": "ledgerpad-e268a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519047756160:android:4c5eb7c2b9404c4463e965",
+        "android_client_info": {
+          "package_name": "com.iago.ledgerbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "519047756160-evvsooukcfcnlg3qgnb8ithknil10dc0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iago.ledgerbook",
+            "certificate_hash": "ca66e5deddfe78b9d5d61fbe8ab608c289b8e548"
+          }
+        },
+        {
+          "client_id": "519047756160-0ehdecbltins3cpivf9773p8h2kbl9rn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHUeu32dTLV8pHNYI0m6El8mWWIAG6aDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "519047756160-0ehdecbltins3cpivf9773p8h2kbl9rn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
