@@ -16,6 +16,8 @@ import com.iago.ledgerbook.data.TransactionType
 fun TransactionsGrid(
     transactions: List<Transaction>,
     currentScreen: TransactionType,
+    isMonthlyMode: Boolean = false,
+    onToggleCheck: ((Transaction) -> Unit)? = null,
     onEdit: (Transaction) -> Unit,
     onDelete: (Transaction) -> Unit
 ) {
@@ -35,7 +37,9 @@ fun TransactionsGrid(
             TransactionType.EXPENSE -> {
                 items(transactions) { transaction ->
                     TransactionCard(
-                        transaction,
+                        transaction = transaction,
+                        isMonthlyMode = isMonthlyMode,
+                        onToggleCheck = { onToggleCheck?.invoke(transaction) },
                         onLongPress = { onDelete(transaction) }
                     ) {
                         onEdit(transaction)
@@ -46,7 +50,9 @@ fun TransactionsGrid(
             TransactionType.SAVING -> {
                 items(transactions) { saving ->
                     SavingCard(
-                        saving,
+                        transaction = saving,
+                        isMonthlyMode = isMonthlyMode,
+                        onToggleCheck = { onToggleCheck?.invoke(saving) },
                         onLongPress = { onDelete(saving) }
                     ) {
                         onEdit(saving)

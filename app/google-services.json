@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "519047756160",
+    "project_id": "ledgerpad-e268a",
+    "storage_bucket": "ledgerpad-e268a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519047756160:android:4c5eb7c2b9404c4463e965",
+        "android_client_info": {
+          "package_name": "com.iago.ledgerbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "519047756160-evvsooukcfcnlg3qgnb8ithknil10dc0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iago.ledgerbook",
+            "certificate_hash": "ca66e5deddfe78b9d5d61fbe8ab608c289b8e548"
+          }
+        },
+        {
+          "client_id": "519047756160-jt1goo8ua6nd8sj7e5odro558tddu4kk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iago.ledgerbook",
+            "certificate_hash": "c35f0fc86fbc618bc26b44afc94f784f66194578"
+          }
+        },
+        {
+          "client_id": "519047756160-m2vgnf2fmejvtbso67tefhh73k7pvso9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iago.ledgerbook",
+            "certificate_hash": "b201d01a3bf89a9eb6c226d341adb4663f44ddb0"
+          }
+        },
+        {
+          "client_id": "519047756160-or1mg90dmagakog6vir1a7adcdn6i2vd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iago.ledgerbook",
+            "certificate_hash": "05adb84649238c1bd586d90e4ca8b2b5969d4b47"
+          }
+        },
+        {
+          "client_id": "519047756160-0ehdecbltins3cpivf9773p8h2kbl9rn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHUeu32dTLV8pHNYI0m6El8mWWIAG6aDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "519047756160-0ehdecbltins3cpivf9773p8h2kbl9rn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

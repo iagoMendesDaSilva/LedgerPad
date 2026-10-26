@@ -1,4 +1,10 @@
 <resources>
+    <string name="login_subtitle">Gerenciamento de finanças simples e seguro</string>
+    <string name="sign_in_google">Entrar com o Google</string>
+    <string name="error_firebase_auth">Erro no Firebase Auth: %1$s</string>
+    <string name="error_google_token">Falha ao obter token do Google</string>
+    <string name="error_google_signin">Google Sign-In falhou: %1$s</string>
+    <string name="error_login">Erro no login: %1$s</string>
     <string name="emergency">Emergência</string>
     <string name="bill">Contas</string>
     <string name="transport">Transporte</string>
@@ -52,4 +58,5 @@
     <string name="monthly_report_negative_accumulated">Você veio com uma dívida acumulada de R$ %1$s do mês anterior.</string>
     <string name="monthly_report_no_accumulated">Você começou este mês sem saldo acumulado.</string>
     <string name="final_balance">Saldo final</string>
+    <string name="include_fixed">Considerar valores fixos</string>
 </resources>

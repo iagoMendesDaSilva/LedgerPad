@@ -19,6 +19,9 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions")
     fun getTransactions(): Flow<List<Transaction>>
 
+    @Query("SELECT * FROM transactions")
+    suspend fun getTransactionsSync(): List<Transaction>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransaction(transaction: Transaction)
 

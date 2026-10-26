@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,13 +27,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iago.ledgerbook.R
 import com.iago.ledgerbook.data.SummaryData
 import com.iago.ledgerbook.data.TransactionType
-import com.iago.ledgerbook.ui.theme.Blue
 import com.iago.ledgerbook.ui.theme.DarkBackground
 import com.iago.ledgerbook.ui.theme.DarkTurquoise
 import com.iago.ledgerbook.ui.theme.LedgerBookTheme
@@ -43,6 +44,7 @@ import java.util.Locale
 fun SummaryDisplay(
     summaryData: SummaryData,
     transactionType: TransactionType,
+    isMonthlyMode: Boolean = false,
     onChangeTransactionType: (TransactionType) -> Unit
 ) {
     val remaining = summaryData.incomes - (summaryData.expenses + summaryData.savings)
@@ -171,23 +173,26 @@ fun SummaryDisplay(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     SummaryItem(
-                        summaryData,
-                        transactionType,
-                        TransactionType.INCOME
+                        summaryData = summaryData,
+                        currentTransactionType = transactionType,
+                        transactionType = TransactionType.INCOME,
+                        isMonthlyMode = isMonthlyMode
                     ) {
                         onChangeTransactionType(TransactionType.INCOME)
                     }
                     SummaryItem(
-                        summaryData,
-                        transactionType,
-                        TransactionType.EXPENSE
+                        summaryData = summaryData,
+                        currentTransactionType = transactionType,
+                        transactionType = TransactionType.EXPENSE,
+                        isMonthlyMode = isMonthlyMode
                     ) {
                         onChangeTransactionType(TransactionType.EXPENSE)
                     }
                     SummaryItem(
-                        summaryData,
-                        transactionType,
-                        TransactionType.SAVING
+                        summaryData = summaryData,
+                        currentTransactionType = transactionType,
+                        transactionType = TransactionType.SAVING,
+                        isMonthlyMode = isMonthlyMode
                     ) {
                         onChangeTransactionType(TransactionType.SAVING)
                     }
@@ -198,14 +203,30 @@ fun SummaryDisplay(
 }
 
 @Composable
-private fun SummaryItem(
+private fun RowScope.SummaryItem(
     summaryData: SummaryData,
     currentTransactionType: TransactionType,
     transactionType: TransactionType,
+    isMonthlyMode: Boolean = false,
     onPress: () -> Unit
 ) {
+    val total = when (transactionType) {
+        TransactionType.EXPENSE -> summaryData.expenses
+        TransactionType.INCOME -> summaryData.incomes
+        TransactionType.SAVING -> summaryData.savings
+    }
+    val checked = when (transactionType) {
+        TransactionType.EXPENSE -> summaryData.checkedExpenses
+        TransactionType.INCOME -> summaryData.checkedIncomes
+        TransactionType.SAVING -> summaryData.checkedSavings
+    }
+
+    val totalFormatted = String.format(Locale("pt", "BR"), "%,.2f", total)
+    val checkedFormatted = String.format(Locale("pt", "BR"), "%,.2f", checked)
+
     Column(
         modifier = Modifier
+            .weight(1f)
             .clickable { onPress() }
             .background(
                 if (currentTransactionType == transactionType) MaterialTheme.colorScheme.primary.copy(
@@ -213,7 +234,7 @@ private fun SummaryItem(
                 ) else Color.Transparent,
                 MaterialTheme.shapes.medium
             )
-            .padding(  12.dp),
+            .padding(vertical = 10.dp, horizontal = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -226,25 +247,37 @@ private fun SummaryItem(
             ),
             style = MaterialTheme.typography.labelSmall,
             color = Color.Gray,
-            letterSpacing = 1.sp
+            letterSpacing = 1.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        Text(
-            maxLines = 1,
-            text = "R$${
-                String.format(
-                    Locale("pt", "BR"), "%,.2f", when (transactionType) {
-                        TransactionType.EXPENSE -> summaryData.expenses
-                        TransactionType.INCOME -> summaryData.incomes
-                        TransactionType.SAVING -> summaryData.savings
-                    }
-                )
-            }",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.White
-        )
+        if (isMonthlyMode) {
+            Text(
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                text = "R$$checkedFormatted",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
+            )
+            Text(
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                text = "de R$$totalFormatted",
+                style = MaterialTheme.typography.labelMedium,
+                color = Color.Gray
+            )
+        } else {
+            Text(
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                text = "R$$totalFormatted",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
+            )
+        }
     }
 }
 

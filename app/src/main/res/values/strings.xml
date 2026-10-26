@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name" translatable="false">Ledger Pad</string>
+    <string name="default_web_client_id" translatable="false">519047756160-0ehdecbltins3cpivf9773p8h2kbl9rn.apps.googleusercontent.com</string>
+    <string name="login_subtitle">Simple &amp; secure personal finance management</string>
+    <string name="sign_in_google">Sign in with Google</string>
+    <string name="error_firebase_auth">Firebase Auth error: %1$s</string>
+    <string name="error_google_token">Failed to get Google token</string>
+    <string name="error_google_signin">Google Sign-In failed: %1$s</string>
+    <string name="error_login">Login error: %1$s</string>
     <string name="emergency">Emergency</string>
     <string name="bill">Bills</string>
     <string name="transport">Transport</string>
@@ -53,4 +60,5 @@
     <string name="monthly_report_negative_accumulated">You came with an accumulated debt of R$ %1$s from the previous month.</string>
     <string name="monthly_report_no_accumulated">You started this month without accumulated balance.</string>
     <string name="final_balance">Final balance</string>
+    <string name="include_fixed">Include fixed values</string>
 </resources>

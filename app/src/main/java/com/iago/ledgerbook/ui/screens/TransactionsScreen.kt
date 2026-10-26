@@ -73,6 +73,7 @@ fun TransactionsScreenUI(
 
     val scope = rememberCoroutineScope()
     val appMode = remember { mutableStateOf(AppMode.FIXED) }
+    val includeFixed = remember { mutableStateOf(false) }
 
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = 500)
 
@@ -170,7 +171,11 @@ fun TransactionsScreenUI(
                         }
                     )
 
-                    SummaryDisplay(summaryData, currentScreen) {
+                    SummaryDisplay(
+                        summaryData = summaryData,
+                        transactionType = currentScreen,
+                        isMonthlyMode = (appMode.value == AppMode.MONTHLY)
+                    ) {
                         onChangeTransactionType(it)
                     }
 
@@ -206,6 +211,10 @@ fun TransactionsScreenUI(
                         TransactionsGrid(
                             transactions = filteredTransactions,
                             currentScreen = currentScreen,
+                            isMonthlyMode = (appMode.value == AppMode.MONTHLY),
+                            onToggleCheck = { transaction ->
+                                updateTransaction(transaction.copy(isChecked = !transaction.isChecked))
+                            },
                             onEdit = {
                                 showBottomSheet = BottomSheetAction.EDIT
                                 editItem.value = it
@@ -306,8 +315,11 @@ fun TransactionsScreenUI(
                         item = generateMonthlyReport(
                             transactions = transactions,
                             currentMonth = currentMonth,
-                            currentYear = currentYear
-                        )
+                            currentYear = currentYear,
+                            includeFixed = includeFixed.value
+                        ),
+                        includeFixed = includeFixed.value,
+                        onIncludeFixedChange = { includeFixed.value = it }
                     )
                 }
 
@@ -357,8 +369,22 @@ fun TransactionsScreenUI(
 fun generateMonthlyReport(
     transactions: List<Transaction>,
     currentMonth: Int,
-    currentYear: Int
+    currentYear: Int,
+    includeFixed: Boolean = false
 ): MonthlyReportItem {
+
+    val fixedList = if (includeFixed) transactions.filter { it.date == null } else emptyList()
+    var fixedIncome = 0.0
+    var fixedExpense = 0.0
+    var fixedSaving = 0.0
+
+    fixedList.forEach {
+        when (it.type) {
+            TransactionType.INCOME -> fixedIncome += it.value
+            TransactionType.EXPENSE -> fixedExpense += it.value
+            TransactionType.SAVING -> fixedSaving += it.value
+        }
+    }
 
     val grouped = transactions
         .filter { it.date != null }
@@ -380,11 +406,24 @@ fun generateMonthlyReport(
 
     var accumulated = 0.0
 
+    if (grouped.isEmpty()) {
+        val balance = fixedIncome - (fixedExpense + fixedSaving)
+        return MonthlyReportItem(
+            month = currentMonth,
+            year = currentYear,
+            income = fixedIncome,
+            expense = fixedExpense,
+            saving = fixedSaving,
+            balance = balance,
+            accumulated = balance
+        )
+    }
+
     grouped.forEach { (date, list) ->
 
-        var income = 0.0
-        var expense = 0.0
-        var saving = 0.0
+        var income = fixedIncome
+        var expense = fixedExpense
+        var saving = fixedSaving
 
         list.forEach {
 
@@ -422,14 +461,15 @@ fun generateMonthlyReport(
         }
     }
 
+    val currentBalance = fixedIncome - (fixedExpense + fixedSaving)
     return MonthlyReportItem(
         month = currentMonth,
         year = currentYear,
-        income = 0.0,
-        expense = 0.0,
-        saving = 0.0,
-        balance = 0.0,
-        accumulated = accumulated
+        income = fixedIncome,
+        expense = fixedExpense,
+        saving = fixedSaving,
+        balance = currentBalance,
+        accumulated = accumulated + currentBalance
     )
 }
 
@@ -466,16 +506,35 @@ fun getSummaryData(transactions: List<Transaction>): SummaryData {
     var income = 0.0
     var expense = 0.0
     var saving = 0.0
+    var checkedIncome = 0.0
+    var checkedExpense = 0.0
+    var checkedSaving = 0.0
 
     transactions.forEach {
         when (it.type) {
-            TransactionType.INCOME -> income += it.value
-            TransactionType.EXPENSE -> expense += it.value
-            TransactionType.SAVING -> saving += it.value
+            TransactionType.INCOME -> {
+                income += it.value
+                if (it.isChecked) checkedIncome += it.value
+            }
+            TransactionType.EXPENSE -> {
+                expense += it.value
+                if (it.isChecked) checkedExpense += it.value
+            }
+            TransactionType.SAVING -> {
+                saving += it.value
+                if (it.isChecked) checkedSaving += it.value
+            }
         }
     }
 
-    return SummaryData(income, expense, saving)
+    return SummaryData(
+        incomes = income,
+        expenses = expense,
+        savings = saving,
+        checkedIncomes = checkedIncome,
+        checkedExpenses = checkedExpense,
+        checkedSavings = checkedSaving
+    )
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

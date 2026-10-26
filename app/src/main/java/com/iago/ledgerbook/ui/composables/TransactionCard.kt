@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -25,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,10 +40,16 @@ import java.util.Locale
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun TransactionCard(transaction: Transaction, onLongPress: () -> Unit,onPress: () -> Unit) {
+fun TransactionCard(
+    transaction: Transaction,
+    isMonthlyMode: Boolean = false,
+    onToggleCheck: (() -> Unit)? = null,
+    onLongPress: () -> Unit,
+    onPress: () -> Unit
+) {
     val formattedValue = String.format(Locale("pt", "BR"), "%,.2f", transaction.value)
 
-        Card(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(90.dp)
@@ -94,8 +103,12 @@ fun TransactionCard(transaction: Transaction, onLongPress: () -> Unit,onPress: (
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     text = transaction.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        textDecoration = if (transaction.isChecked && isMonthlyMode) TextDecoration.LineThrough else TextDecoration.None
+                    ),
+                    color = if (transaction.isChecked && isMonthlyMode)
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    else MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(2.dp))
@@ -113,6 +126,18 @@ fun TransactionCard(transaction: Transaction, onLongPress: () -> Unit,onPress: (
                 style = MaterialTheme.typography.labelLarge,
                 color = if (transaction.type == TransactionType.INCOME) MaterialTheme.colorScheme.primary else Red
             )
+
+            if (isMonthlyMode && onToggleCheck != null) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Checkbox(
+                    checked = transaction.isChecked,
+                    onCheckedChange = { onToggleCheck() },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = MaterialTheme.colorScheme.primary,
+                        uncheckedColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    )
+                )
+            }
         }
     }
 }

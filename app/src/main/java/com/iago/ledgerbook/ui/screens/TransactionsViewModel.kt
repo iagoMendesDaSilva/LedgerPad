@@ -2,22 +2,26 @@ package com.iago.ledgerbook.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.iago.ledgerbook.data.FirestoreTransactionRepository
 import com.iago.ledgerbook.data.Transaction
-import com.iago.ledgerbook.data.TransactionDao
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TransactionsViewModel @Inject constructor(
-    private val transactionDao: TransactionDao,
+    private val repository: FirestoreTransactionRepository,
 ) : ViewModel() {
 
-    val transactions = transactionDao.getTransactions()
+    init {
+        viewModelScope.launch {
+            repository.checkAndMigrateLocalData()
+        }
+    }
+
+    val transactions = repository.getTransactions()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -26,16 +30,16 @@ class TransactionsViewModel @Inject constructor(
 
     fun addTransaction(transaction: Transaction) =
         viewModelScope.launch {
-            transactionDao.insertTransaction(transaction)
+            repository.insertTransaction(transaction)
         }
 
     fun updateTransaction(transaction: Transaction) =
         viewModelScope.launch {
-            transactionDao.updateTransaction(transaction)
+            repository.updateTransaction(transaction)
         }
 
     fun deleteTransaction(transaction: Transaction) =
         viewModelScope.launch {
-            transactionDao.deleteTransaction(transaction)
+            repository.deleteTransaction(transaction)
         }
 }
